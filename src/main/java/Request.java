@@ -9,16 +9,16 @@ public class Request {
     public static String http;
     public static String contentType;
     public static HashMap<String, String> mapHeadersValues = new HashMap<>();
-    public static String body;
+    public static List<String> bodyList = new ArrayList<>();
     public static final Pattern patternHeaderValue = Pattern.compile("(\\p{Lu}{1,2}.*(\\:))(\\s.*)");
 
-    public Request(String method, String path, String http, String contentType, HashMap<String, String> mapHeadersValues, String body) {
+    public Request(String method, String path, String http, String contentType, HashMap<String, String> mapHeadersValues, List<String> bodyList) {
         this.method = method;
         this.path = path;
         this.http = http;
         this.contentType = contentType;
         this.mapHeadersValues = mapHeadersValues;
-        this.body = body;
+        this.bodyList = bodyList;
     }
 
     public static Request parse(InputStream isr) throws IOException {
@@ -28,24 +28,29 @@ public class Request {
             path = pathExeHttp[1];
             http = pathExeHttp[2];
             mapHeadersValues = new HashMap<>();
-            String other = null;
+            if(bodyList.size() > 0) {// если в теле что-то есть, удаляем
+                bodyList.removeAll(bodyList);
+            }
+            String other = null;//строка дл считывания заголовков протокола и тела
+            int count = 0;//счетчик контроля поиска пустых строк
             while (reader.ready()) {
                 other = reader.readLine();
-                int count = 0;//счетчик контроля поиска пустых строк
                 Matcher matcherHeaderValue = patternHeaderValue.matcher(other);
                 if (!(other.length() == 0)) {
+                    if(count > 0) {
+                        bodyList.add(other);//формирую боди
+                    }
                     if (matcherHeaderValue.find()) {
                         mapHeadersValues.put(matcherHeaderValue.group(1), matcherHeaderValue.group(3));
                         if (matcherHeaderValue.group(1).equals("Content-Type:")) {
                             contentType = matcherHeaderValue.group(3);
                         }
                     }
-                } else if (count < 2) {
+                } else if (count >= 0) {
                     count++;
                 }
             }
-            body = other;
-        return new Request(method, path, http, contentType, mapHeadersValues, body);
+        return new Request(method, path, http, contentType, mapHeadersValues, bodyList);
     }
 }
 

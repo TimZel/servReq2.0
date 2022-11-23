@@ -35,6 +35,15 @@ public class servImage {
                                 out.write(bytes, 0, count);//отправляю содержимое файла
                             }
                             System.out.println("The request from user was completed succesfully!");
+                            //checking the parsed values:
+                            System.out.println("\nrequest information: "+ "\n" + "method: " +request.method + "\n"+ "path: " + request.path+ "\n" + "http: "+
+                                    request.http  +"\n"+ "contentType: " + request.contentType);
+                            System.out.println("body: ");
+                            for (int i = 0; i < request.bodyList.size(); i++) {
+                                System.out.println(request.bodyList.get(i));
+                            }
+                            System.out.println("\n\n");
+
                         } catch (FileNotFoundException ex) {
                             System.out.println("Внимание! Розыск: " + ex);//шуткую, если файла нет
                             out.write(notFound.getBytes());
