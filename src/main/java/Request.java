@@ -4,12 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Request {
-    public static String method;
-    public static String path;
-    public static String http;
-    public static String contentType;
-    public static HashMap<String, String> mapHeadersValues = new HashMap<>();
-    public static List<String> bodyList = new ArrayList<>();
+    String method;
+    String path;
+    String http;
+    String contentType;
+    HashMap<String, String> mapHeadersValues = new HashMap<>();
+    List<String> bodyList = new ArrayList<>();
     public static final Pattern patternHeaderValue = Pattern.compile("(\\p{Lu}{1,2}.*(\\:))(\\s.*)");
 
     public Request(String method, String path, String http, String contentType, HashMap<String, String> mapHeadersValues, List<String> bodyList) {
@@ -23,15 +23,13 @@ public class Request {
 
     public static Request parse(InputStream isr) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(isr));
-            String[] pathExeHttp = reader.readLine().split(" ");
-            method = pathExeHttp[0];
-            path = pathExeHttp[1];
-            http = pathExeHttp[2];
-            mapHeadersValues = new HashMap<>();
-            if(bodyList.size() > 0) {// если в теле что-то есть, удаляем
-                bodyList.removeAll(bodyList);
-                contentType = null;
-            }
+        String[] pathExeHttp = reader.readLine().split(" ");
+        String methodParse = pathExeHttp[0];
+        String pathParse = pathExeHttp[1];
+        String httpParse = pathExeHttp[2];
+        HashMap<String, String> mapHeadersValuesParse = new HashMap<>();
+        List<String> bodyListParse = new ArrayList<>();
+        String contentTypeParse = null;
             String other = null;//строка дл считывания заголовков протокола и тела
             int count = 0;//счетчик контроля поиска пустых строк
             while (reader.ready()) {
@@ -39,22 +37,21 @@ public class Request {
                 Matcher matcherHeaderValue = patternHeaderValue.matcher(other);
                 if (!(other.length() == 0)) {
                     if(count > 0) {
-                        bodyList.add(other);//формирую боди
+                        bodyListParse.add(other);//формирую боди
                     }
                     if (matcherHeaderValue.find()) {
-                        mapHeadersValues.put(matcherHeaderValue.group(1), matcherHeaderValue.group(3));
+                        mapHeadersValuesParse.put(matcherHeaderValue.group(1), matcherHeaderValue.group(3));
                         if (matcherHeaderValue.group(1).equals("Content-Type:")) {
-                            contentType = matcherHeaderValue.group(3);
+                            contentTypeParse = matcherHeaderValue.group(3);
                         }
                     }
                 } else if (count >= 0) {
                     count++;
                 }
             }
-        return new Request(method, path, http, contentType, mapHeadersValues, bodyList);
+        return new Request(methodParse, pathParse, httpParse, contentTypeParse, mapHeadersValuesParse, bodyListParse);
     }
 }
-
 
 
 
