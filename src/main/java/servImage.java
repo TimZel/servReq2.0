@@ -1,13 +1,12 @@
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.util.*;
-import java.util.regex.Pattern;
+
 
 public class servImage {
-    public static final  String notFound = "HTTP/1.0 404 Not Found\r\n" + "Content-Type: text/html\r\n" + "\r\n";
-    public static final String badRequest = "HTTP/1.0 400 Bad Request\r\n" + "Content-Type: text/html\r\n" + "\r\n";
-    public static final Pattern pattern = Pattern.compile("(/[^\s]*)(\\.[^\s]*)");
+    public static final  String notFound = "HTTP/1.0 404 Not Found\r\nContent-Type: text/html\r\n\r\n";
+    public static final String badRequest = "HTTP/1.0 400 Bad Request\r\nContent-Type: text/html\r\n\r\n";
+
 
 
     public static void main(String[] args) throws IOException {
@@ -30,7 +29,7 @@ public class servImage {
                             byte[] bytes = new byte[5*1024];//создаю байт-массив для хранения информации из файла
                             String httpResponse = "HTTP/1.0 200 OK\r\n" + "Content-Type:" + request.contentType + "\r\n" + "\r\n";
                             out.write(httpResponse.getBytes());//отправляю хттп-ответ
-                            int count = 0;
+                            int count;
                             while ((count = in.read(bytes)) > -1) {
                                 out.write(bytes, 0, count);//отправляю содержимое файла
                             }
@@ -55,10 +54,3 @@ public class servImage {
         System.out.println("Server closed due to settings.");
     }
 }
-
-
-
-
-
-
-//2
