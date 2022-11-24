@@ -30,6 +30,7 @@ public class Request {
             mapHeadersValues = new HashMap<>();
             if(bodyList.size() > 0) {// если в теле что-то есть, удаляем
                 bodyList.removeAll(bodyList);
+                contentType = null;
             }
             String other = null;//строка дл считывания заголовков протокола и тела
             int count = 0;//счетчик контроля поиска пустых строк
