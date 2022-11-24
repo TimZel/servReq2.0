@@ -8,8 +8,8 @@ public class Request {
     String path;
     String http;
     String contentType;
-    HashMap<String, String> mapHeadersValues = new HashMap<>();
-    List<String> bodyList = new ArrayList<>();
+    HashMap<String, String> mapHeadersValues;
+    List<String> bodyList;
     public static final Pattern patternHeaderValue = Pattern.compile("(\\p{Lu}{1,2}.*(\\:))(\\s.*)");
 
     public Request(String method, String path, String http, String contentType, HashMap<String, String> mapHeadersValues, List<String> bodyList) {
@@ -30,7 +30,8 @@ public class Request {
         HashMap<String, String> mapHeadersValuesParse = new HashMap<>();
         List<String> bodyListParse = new ArrayList<>();
         String contentTypeParse = null;
-            String other = null;//строка дл считывания заголовков протокола и тела
+
+            String other;//строка дл считывания заголовков протокола и тела
             int count = 0;//счетчик контроля поиска пустых строк
             while (reader.ready()) {
                 other = reader.readLine();
