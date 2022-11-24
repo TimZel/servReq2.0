@@ -55,3 +55,10 @@ public class servImage {
         System.out.println("Server closed due to settings.");
     }
 }
+
+
+
+
+
+
+//2
